@@ -1,0 +1,8 @@
+@startuml checkout-payment-failed
+Cart -> Order: cart.checkout
+Order -> Inventory: order.created
+Inventory -> Order: inventory.update.success
+Order -> Payment: order.checked
+Payment -> Order: payment.done.failed
+Order -> Inventory: order.cancelled.payment
+@enduml

@@ -1,0 +1,9 @@
+@startuml checkout-success
+Cart -> Order: cart.checkout
+Order -> Inventory: order.created
+Inventory -> Order: inventory.update.success
+Order -> Payment: order.checked
+Payment -> Order: payment.done.success
+Order -> Shipping: order.paid
+Shipping -> Order: shipping.done.success
+@enduml

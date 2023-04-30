@@ -1,0 +1,5 @@
+@startuml checkout-inventory-failed
+Cart -> Order: cart.checkout
+Order -> Inventory: order.created
+Inventory -> Order: inventory.update.failed
+@enduml

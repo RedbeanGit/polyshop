@@ -1,0 +1,175 @@
+version: '3'
+
+networks:
+  webapps:
+    external: true
+  catalog:
+  cart:
+  order:
+  inventory:
+  gateway:
+  eureka:
+  rabbitmq:
+
+services:
+  eureka:
+    image: redbeandock/polyshop-discovery-server:latest
+    restart: always
+    networks:
+      - eureka
+
+  gateway:
+    image: redbeandock/polyshop-gateway:latest
+    restart: always
+    hostname: polyshop_gateway
+    depends_on:
+      - eureka
+      - catalog
+      - cart
+      - order
+      - inventory
+    networks:
+      - webapps
+      - eureka
+      - gateway
+  
+  rabbitmq:
+    image: rabbitmq:management
+    restart: always
+    networks:
+      - rabbitmq
+
+  postgres:
+    image: postgres:15.2
+    restart: always
+    env_file:
+      - postgres.env
+    networks:
+      - order
+  
+  mongo_catalog:
+    image: mongo:6.0.5
+    restart: always
+    env_file:
+      - mongo_catalog.env
+    networks:
+      - catalog
+
+  redis:
+    image: redis:7.0.9
+    restart: always
+    env_file:
+      - redis.env
+    networks:
+      - cart
+
+  mongo_inventory:
+    image: mongo:6.0.5
+    restart: always
+    env_file:
+      - mongo_inventory.env
+    networks:
+      - inventory
+
+  catalog:
+    image: redbeandock/polyshop-catalog:latest
+    restart: always
+    hostname: polyshop_catalog
+    depends_on:
+      - mongo_catalog
+      - eureka
+      - rabbitmq
+    env_file:
+      - catalog.env
+    networks:
+      - catalog
+      - eureka
+      - rabbitmq
+      - gateway
+  
+  cart:
+    image: redbeandock/polyshop-cart:latest
+    restart: always
+    hostname: polyshop_cart
+    depends_on:
+      - redis
+      - eureka
+      - rabbitmq
+    env_file:
+      - cart.env
+    networks:
+      - cart
+      - eureka
+      - rabbitmq
+      - gateway
+
+  order:
+    image: redbeandock/polyshop-order:latest
+    restart: always
+    hostname: polyshop_order
+    depends_on:
+      - postgres
+      - eureka
+      - rabbitmq
+    env_file:
+      - order.env
+    networks:
+      - order
+      - eureka
+      - rabbitmq
+      - gateway
+
+  inventory:
+    image: redbeandock/polyshop-inventory:latest
+    restart: always
+    hostname: polyshop_inventory
+    depends_on:
+      - mongo_inventory
+      - eureka
+      - rabbitmq
+    env_file:
+      - inventory.env
+    networks:
+      - inventory
+      - eureka
+      - rabbitmq
+      - gateway
+
+  payment:
+    image: redbeandock/polyshop-payment:latest
+    restart: always
+    hostname: polyshop_payment
+    depends_on:
+      - eureka
+      - rabbitmq
+    env_file:
+      - payment.env
+    networks:
+      - eureka
+      - rabbitmq
+      - gateway
+
+  shipping:
+    image: redbeandock/polyshop-shipping:latest
+    restart: always
+    hostname: polyshop_shipping
+    depends_on:
+      - eureka
+      - rabbitmq
+    env_file:
+      - shipping.env
+    networks:
+      - eureka
+      - rabbitmq
+      - gateway
+  
+  frontend:
+    image: redbeandock/polyshop-frontend:latest
+    restart: always
+    hostname: polyshop_frontend
+    depends_on:
+      - gateway
+    env_file:
+      - frontend.env
+    networks:
+      - gateway
