@@ -82,3 +82,4 @@ Messages are sent following saga orchestration architecture. Order service becom
 - The Catalog, Cart, Order, and Inventory microservices have their own databases (MongoDB for Catalog and Inventory, Redis for Cart, and PostgreSQL for Order).
 - The Payment and Shipping microservices are dummy services that simulate payment processing and shipping, respectively.
 - The README files for each microservice with more explanation can be found in their respective directories in this repository.
+- The Order microservice follow the **CQRS / Event Sourcing** architecture.
