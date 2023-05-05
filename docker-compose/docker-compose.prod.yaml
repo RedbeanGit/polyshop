@@ -8,34 +8,29 @@ networks:
   order:
   inventory:
   gateway:
-  eureka:
   rabbitmq:
 
 services:
-  eureka:
-    image: redbeandock/polyshop-discovery-server:latest
-    restart: always
-    networks:
-      - eureka
-
   gateway:
     image: redbeandock/polyshop-gateway:latest
     restart: always
     hostname: polyshop_gateway
     depends_on:
-      - eureka
       - catalog
       - cart
       - order
       - inventory
+    env_file:
+      - gateway.env
     networks:
       - webapps
-      - eureka
       - gateway
   
   rabbitmq:
     image: rabbitmq:management
     restart: always
+    env_file:
+      - rabbitmq.env
     networks:
       - rabbitmq
 
@@ -94,13 +89,11 @@ services:
     hostname: polyshop_catalog
     depends_on:
       - mongo_catalog
-      - eureka
       - rabbitmq
     env_file:
       - catalog.env
     networks:
       - catalog
-      - eureka
       - rabbitmq
       - gateway
   
@@ -110,13 +103,11 @@ services:
     hostname: polyshop_cart
     depends_on:
       - redis
-      - eureka
       - rabbitmq
     env_file:
       - cart.env
     networks:
       - cart
-      - eureka
       - rabbitmq
       - gateway
 
@@ -126,13 +117,11 @@ services:
     hostname: polyshop_order
     depends_on:
       - postgres
-      - eureka
       - rabbitmq
     env_file:
       - order.env
     networks:
       - order
-      - eureka
       - rabbitmq
       - gateway
 
@@ -142,13 +131,11 @@ services:
     hostname: polyshop_inventory
     depends_on:
       - mongo_inventory
-      - eureka
       - rabbitmq
     env_file:
       - inventory.env
     networks:
       - inventory
-      - eureka
       - rabbitmq
       - gateway
 
@@ -157,12 +144,10 @@ services:
     restart: always
     hostname: polyshop_payment
     depends_on:
-      - eureka
       - rabbitmq
     env_file:
       - payment.env
     networks:
-      - eureka
       - rabbitmq
       - gateway
 
@@ -171,12 +156,10 @@ services:
     restart: always
     hostname: polyshop_shipping
     depends_on:
-      - eureka
       - rabbitmq
     env_file:
       - shipping.env
     networks:
-      - eureka
       - rabbitmq
       - gateway
   
@@ -190,3 +173,4 @@ services:
       - frontend.env
     networks:
       - gateway
+      - webapps
