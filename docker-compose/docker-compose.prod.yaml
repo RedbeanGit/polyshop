@@ -46,6 +46,19 @@ services:
       - postgres.env
     networks:
       - order
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  eventstore_order:
+    image: eventstore/eventstore:21.10.1-buster-slim
+    restart: always
+    env_file:
+      - eventstore_order.env
+    networks:
+      - order
+    volumes:
+      - ./eventstore-order-data:/var/lib/eventstore
+      - ./eventstore-order-logs:/var/log/eventstore
   
   mongo_catalog:
     image: mongo:6.0.5
@@ -54,6 +67,8 @@ services:
       - mongo_catalog.env
     networks:
       - catalog
+    volumes:
+      - ./mongo-catalog-data:/data/db
 
   redis:
     image: redis:7.0.9
@@ -70,6 +85,8 @@ services:
       - mongo_inventory.env
     networks:
       - inventory
+    volumes:
+      - ./mongo-inventory-data:/data/db
 
   catalog:
     image: redbeandock/polyshop-catalog:latest

@@ -1,0 +1,15 @@
+= Rapport d'architecture technique: PolyCode et micro-services
+:toc:
+:toc-title: Table des matières
+:sectnums:
+Julien Dubois
+v2.0, 2023-05-01 (Differences avec la version 1.0 seulement)
+
+[.metadata]
+{author} -- version {revnumber}, {revdate}
+
+include::microservices.adoc[Micro-services]
+
+include::interconnexions.adoc[Interconnexions]
+
+include::data.adoc[Données]

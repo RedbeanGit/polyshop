@@ -26,6 +26,14 @@ services:
       - 5672:5672
       - 15672:15672
 
+  eventstore_order:
+    image: eventstore/eventstore:21.10.1-buster-slim
+    environment:
+      - EVENTSTORE_INSECURE=true
+    ports:
+      - 2113:2113
+      - 1113:1113
+
   postgres:
     image: postgres:15.2
     environment:
